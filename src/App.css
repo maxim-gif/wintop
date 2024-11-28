@@ -30,7 +30,7 @@ body {
 }
 span {
   color: #751a79;
-  font-weight: 700;
+  font-weight: 900;
   margin-bottom: 20px;
   opacity: 1;
 
@@ -59,6 +59,7 @@ button {
   -webkit-app-region: no-drag;
 }
 .listCurse > span {
+ 
   margin-bottom: 0;
   color: rgb(0, 0, 0);
 }

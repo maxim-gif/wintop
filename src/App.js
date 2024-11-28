@@ -143,7 +143,7 @@ function App() {
           <span key={index}>{item.name}</span>
         ))}
         </div>}
-        {selectedName !== null &&<button className="blockButton" onClick={handleDisableWindow} style={{display:status}}>Зафиксировать на месте</button>}
+        {selectedName !== null &&<button className="blockButton" onClick={handleDisableWindow} style={{display:"none"}}>Зафиксировать на месте</button>}
       </header>
     </div>
   );
