@@ -17,8 +17,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-
-
 function App() {
 
   const [adminData, setAdminData] = useState(null);
