@@ -27,11 +27,35 @@ function App() {
   
   const sumRef = useRef([0,0,0,0])
 
+  
+
+
+  // Проверяем, поддерживает ли браузер уведомления
+if ("Notification" in window) {
+  // Запрашиваем разрешение на уведомления
+  Notification.requestPermission().then(function(permission) {
+      if (permission === "granted") {
+          // Разрешение получено, можно отправлять уведомления
+          console.log("Разрешение на уведомления получено.");
+      } else if (permission === "denied") {
+          // Разрешение отклонено
+          console.log("Разрешение на уведомления отклонено.");
+      } else {
+          // Пользователь закрыл диалог, не выбрав ни одно из вариантов
+          console.log("Пользователь не выбрал вариант.");
+      }
+  });
+
+  
+} else {
+  console.log("Ваш браузер не поддерживает уведомления.");
+}
  
   const handleGetData = async() => {
     const fetchedAdminData = await getAdminData();
     setAdminData(fetchedAdminData);
   };
+
 
   useEffect(() => {
     const db = getDatabase(app);
