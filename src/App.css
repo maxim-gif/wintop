@@ -1,3 +1,7 @@
+body {
+  -webkit-app-region: drag;
+  overflow: hidden;
+}
 .App {
   text-align: center;
 }
@@ -14,16 +18,22 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.3);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
   color: white;
 }
+span {
+  color: #751a79;
+  font-weight: 700;
+  margin-bottom: 20px;
+  opacity: 1;
 
+}
 .App-link {
   color: #61dafb;
 }
@@ -35,4 +45,27 @@
   to {
     transform: rotate(360deg);
   }
+}
+button {
+  width: 100px;
+  height: 30px;
+  margin: 5px 0;
+  color: rgb(0, 0, 0);
+  font-weight: 500;
+  font-size: 12px;
+  background: #ffffff;
+  border: 1px solid #df7fe2;
+  -webkit-app-region: no-drag;
+}
+.listCurse > span {
+  margin-bottom: 0;
+  color: rgb(0, 0, 0);
+}
+.listCurse {
+  display: flex;
+  flex-direction: column;
+}
+.blockButton{
+  position: absolute;
+  bottom: 0px;
 }
