@@ -4,7 +4,7 @@ body {
 }
 .App {
   text-align: center;
-  background-color: rgba(255, 255, 255, 0.3);
+  /* background-color: rgba(255, 255, 255, 0.3); */
 }
 
 .App-logo {
@@ -20,7 +20,7 @@ body {
 
 .App-header {
   position: relative;
-  background-color: rgba(255, 255, 255, 0.3);
+  /* background-color: rgba(255, 255, 255, 0.3); */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
