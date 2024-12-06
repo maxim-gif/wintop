@@ -63,6 +63,65 @@ if ("Notification" in window) {
     const unsubscribe = onValue(dataRef, (snapshot) => {
       const data = snapshot.val();
       setUserData(data)
+      for (let index = 0; index < 4; index++) {
+        if (userData !== null && userData[index]) {
+  
+          const sort = [...new Set(userData[index].uncompletedCursesList)]
+  
+          const getIndex = (name) => {
+            const index = sort.indexOf(name);
+            return index === -1 ? Infinity : index;
+          }
+          if (userData[index].curses !== undefined) {
+            userData[index].curses.sort((a, b) => getIndex(a.name) - getIndex(b.name));
+            userData[index].curses.sort(function(a, b) {
+              return a.general === b.general ? 0 : a.general ? -1 : 1;
+            });
+            userData[index].curses.sort(function(a, b) {
+              if (a.completedCounter === a.totalCounter && b.completedCounter !== b.totalCounter) {
+                return 1;
+              } else if (a.completedCounter !== a.totalCounter && b.completedCounter === b.totalCounter) {
+                return -1;
+              } else {
+                return 0;
+              }
+            })
+          }
+  
+          let sum = [0,0,0,0];
+          if (userData[index].curses) {
+            userData[index].curses.forEach((item) => {
+              sum[index] += item.totalCounter;
+            });
+          } else {
+            sum[index] = -1
+          }
+  
+  
+          if (sum[index] > sumRef.current[index]) {
+            if (sumRef.current[index] !== 0) {
+  
+              if (index === selectedName) {
+  
+                const list = userData[index].uncompletedCursesList
+                const name = list[list.length-1];
+                const curse = userData[index].curses.find((item) => item.name === name )
+                audioRef.current.play()
+  
+               // eslint-disable-next-line no-unused-vars
+               const not = new Notification(`Добавлено новое проклятие - ${name}`, {
+                  title: "mi",
+                  body: curse.title,
+                  icon: 'https://tab-jet.vercel.app/static/media/logoBig.433cf0ad02a6efb20947.png'
+                });
+                
+            
+              }
+            }
+          }
+          sumRef.current[index] = sum[index]
+        } 
+      }
     });
 
     return () => unsubscribe();
@@ -72,67 +131,7 @@ if ("Notification" in window) {
     handleGetData()
   }, []);
 
-  useEffect(() => {
-    for (let index = 0; index < 4; index++) {
-      if (userData !== null && userData[index]) {
 
-        const sort = [...new Set(userData[index].uncompletedCursesList)]
-
-        const getIndex = (name) => {
-          const index = sort.indexOf(name);
-          return index === -1 ? Infinity : index;
-        }
-        if (userData[index].curses !== undefined) {
-          userData[index].curses.sort((a, b) => getIndex(a.name) - getIndex(b.name));
-          userData[index].curses.sort(function(a, b) {
-            return a.general === b.general ? 0 : a.general ? -1 : 1;
-          });
-          userData[index].curses.sort(function(a, b) {
-            if (a.completedCounter === a.totalCounter && b.completedCounter !== b.totalCounter) {
-              return 1;
-            } else if (a.completedCounter !== a.totalCounter && b.completedCounter === b.totalCounter) {
-              return -1;
-            } else {
-              return 0;
-            }
-          })
-        }
-
-        let sum = [0,0,0,0];
-        if (userData[index].curses) {
-          userData[index].curses.forEach((item) => {
-            sum[index] += item.totalCounter;
-          });
-        } else {
-          sum[index] = -1
-        }
-
-
-        if (sum[index] > sumRef.current[index]) {
-          if (sumRef.current[index] !== 0) {
-
-            if (index === selectedName) {
-
-              const list = userData[index].uncompletedCursesList
-              const name = list[list.length-1];
-              const curse = userData[index].curses.find((item) => item.name === name )
-              audioRef.current.play()
-
-             // eslint-disable-next-line no-unused-vars
-             const not = new Notification(`Добавлено новое проклятие - ${name}`, {
-                title: "mi",
-                body: curse.title,
-                icon: 'https://tab-jet.vercel.app/static/media/logoBig.433cf0ad02a6efb20947.png'
-              });
-              
-          
-            }
-          }
-        }
-        sumRef.current[index] = sum[index]
-      } 
-    }
-  }, [userData]);
 
   const selectUser = (index) => {
     setSelectedName(index)
