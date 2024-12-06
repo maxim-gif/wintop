@@ -36,13 +36,13 @@ if ("Notification" in window) {
   Notification.requestPermission().then(function(permission) {
       if (permission === "granted") {
           // Разрешение получено, можно отправлять уведомления
-          console.log("Разрешение на уведомления получено.");
+    
       } else if (permission === "denied") {
           // Разрешение отклонено
-          console.log("Разрешение на уведомления отклонено.");
+      
       } else {
           // Пользователь закрыл диалог, не выбрав ни одно из вариантов
-          console.log("Пользователь не выбрал вариант.");
+ 
       }
   });
 
@@ -132,20 +132,12 @@ if ("Notification" in window) {
     handleGetData()
   }, []);
 
-  useEffect(() => {
-    console.log(selectedName);
-  }, [selectedName]);
+
 
   const selectUser = (index) => {
     setSelectedName(index)
-    console.log(userData);
-    if (userData !== null) {
-      console.log(userData[index].curses);
-    }
-    
   }
 
-  
 
   const handleDisableWindow = () => {
     window.electron.ipcRenderer.send('disable-main-window');
