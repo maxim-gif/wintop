@@ -162,7 +162,7 @@ if ("Notification" in window) {
   return (
     <div className="App">
       <header className="App-header">
-      <audio ref={audioRef} src="/curse.mp3" autoplay></audio>
+      <audio ref={audioRef} src="/curse.mp3"></audio>
         {selectedName === null && <span>Выберите участника</span>}
         {adminData && adminData.listMember && adminData.listMember.length > 0 && selectedName === null &&(
           <>
