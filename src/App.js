@@ -102,6 +102,7 @@ if ("Notification" in window) {
             if (sumRef.current[index] !== 0) {
 
               if (index === selectedName) {
+                audioRef.current.play()
                 console.log(data[index].curses);
                 const list = data[index].uncompletedCursesList
                 const name = list[list.length-1];
@@ -115,7 +116,7 @@ if ("Notification" in window) {
                 // setTimeout(() => {
                 //   not.close();
                 // }, 1500);
-                audioRef.current.play()
+                
               }
             }
           }
