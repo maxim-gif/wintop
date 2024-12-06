@@ -102,22 +102,19 @@ if ("Notification" in window) {
             if (sumRef.current[index] !== 0) {
 
               if (index === selectedName) {
-                
-                console.log(data[index].curses);
+
                 const list = data[index].uncompletedCursesList
                 const name = list[list.length-1];
                 const curse = data[index].curses.find((item) => item.name === name )
+                audioRef.current.play()
                // eslint-disable-next-line no-unused-vars
                const not = new Notification(`Добавлено новое проклятие - ${name}`, {
                   title: "mi",
                   body: curse.title,
                   icon: 'https://tab-jet.vercel.app/static/media/logoBig.433cf0ad02a6efb20947.png'
                 });
-                audioRef.current.play()
-                // setTimeout(() => {
-                //   not.close();
-                // }, 1500);
                 
+            
               }
             }
           }
