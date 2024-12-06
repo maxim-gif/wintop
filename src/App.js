@@ -107,6 +107,7 @@ if ("Notification" in window) {
                 const name = list[list.length-1];
                 const curse = data[index].curses.find((item) => item.name === name )
                 audioRef.current.play()
+                
                // eslint-disable-next-line no-unused-vars
                const not = new Notification(`Добавлено новое проклятие - ${name}`, {
                   title: "mi",
