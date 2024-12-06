@@ -115,6 +115,7 @@ if ("Notification" in window) {
                 // setTimeout(() => {
                 //   not.close();
                 // }, 1500);
+                playAudio()
               }
             }
           }
@@ -150,9 +151,18 @@ if ("Notification" in window) {
     setStatus("none")
   };
 
+  const audioRef = useRef(null);
+  
+  const playAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.play(); // Запускаем воспроизведение
+    }
+  };
+
   return (
     <div className="App">
       <header className="App-header">
+      <audio ref={audioRef} src="/curse.mp3" autoplay></audio>
         {selectedName === null && <span>Выберите участника</span>}
         {adminData && adminData.listMember && adminData.listMember.length > 0 && selectedName === null &&(
           <>
