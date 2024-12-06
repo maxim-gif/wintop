@@ -25,9 +25,10 @@ function App() {
   const [status, setStatus] = useState('block');
   
   
-  const sumRef = useRef([0,0,0,0])
+  // const sumRef = useRef([0,0,0,0])
 
-  
+  const [sum, setSum] = useState(0);
+  const prevSumRef = useRef(0);
 
 
   // Проверяем, поддерживает ли браузер уведомления
@@ -59,69 +60,77 @@ if ("Notification" in window) {
 
   useEffect(() => {
     const db = getDatabase(app);
-    const dataRef = ref(db, 'participantData/');
+    const dataRef = ref(db, 'participantData/0/curses');
     const unsubscribe = onValue(dataRef, (snapshot) => {
       const data = snapshot.val();
+      console.log(data);
       setUserData(data)
-      for (let index = 0; index < 4; index++) {
-        if (userData !== null && userData[index]) {
+      if (data !== null) {
+        const sum = data.reduce((accumulator, curse) => {
+          return accumulator + (curse.totalCounter - curse.completedCounter);
+        }, 0);
+        setSum(sum)
+      }
+      
+      // for (let index = 0; index < 4; index++) {
+      //   if (data !== null && data[index]) {
   
-          const sort = [...new Set(userData[index].uncompletedCursesList)]
+      //     const sort = [...new Set(data[index].uncompletedCursesList)]
   
-          const getIndex = (name) => {
-            const index = sort.indexOf(name);
-            return index === -1 ? Infinity : index;
-          }
-          if (userData[index].curses !== undefined) {
-            userData[index].curses.sort((a, b) => getIndex(a.name) - getIndex(b.name));
-            userData[index].curses.sort(function(a, b) {
-              return a.general === b.general ? 0 : a.general ? -1 : 1;
-            });
-            userData[index].curses.sort(function(a, b) {
-              if (a.completedCounter === a.totalCounter && b.completedCounter !== b.totalCounter) {
-                return 1;
-              } else if (a.completedCounter !== a.totalCounter && b.completedCounter === b.totalCounter) {
-                return -1;
-              } else {
-                return 0;
-              }
-            })
-          }
+      //     const getIndex = (name) => {
+      //       const index = sort.indexOf(name);
+      //       return index === -1 ? Infinity : index;
+      //     }
+      //     if (data[index].curses !== undefined) {
+      //       data[index].curses.sort((a, b) => getIndex(a.name) - getIndex(b.name));
+      //       data[index].curses.sort(function(a, b) {
+      //         return a.general === b.general ? 0 : a.general ? -1 : 1;
+      //       });
+      //       data[index].curses.sort(function(a, b) {
+      //         if (a.completedCounter === a.totalCounter && b.completedCounter !== b.totalCounter) {
+      //           return 1;
+      //         } else if (a.completedCounter !== a.totalCounter && b.completedCounter === b.totalCounter) {
+      //           return -1;
+      //         } else {
+      //           return 0;
+      //         }
+      //       })
+      //     }
   
-          let sum = [0,0,0,0];
-          if (userData[index].curses) {
-            userData[index].curses.forEach((item) => {
-              sum[index] += item.totalCounter;
-            });
-          } else {
-            sum[index] = -1
-          }
+      //     let sum = [0,0,0,0];
+      //     if (data[index].curses) {
+      //       data[index].curses.forEach((item) => {
+      //         sum[index] += item.totalCounter;
+      //       });
+      //     } else {
+      //       sum[index] = -1
+      //     }
   
   
-          if (sum[index] > sumRef.current[index]) {
-            if (sumRef.current[index] !== 0) {
+      //     if (sum[index] > sumRef.current[index]) {
+      //       if (sumRef.current[index] !== 0) {
   
-              if (index === selectedName) {
+      //         if (index === selectedName) {
   
-                const list = userData[index].uncompletedCursesList
-                const name = list[list.length-1];
-                const curse = userData[index].curses.find((item) => item.name === name )
-                audioRef.current.play()
+      //           const list = data[index].uncompletedCursesList
+      //           const name = list[list.length-1];
+      //           const curse = data[index].curses.find((item) => item.name === name )
+      //           audioRef.current.play()
   
-               // eslint-disable-next-line no-unused-vars
-               const not = new Notification(`Добавлено новое проклятие - ${name}`, {
-                  title: "mi",
-                  body: curse.title,
-                  icon: 'https://tab-jet.vercel.app/static/media/logoBig.433cf0ad02a6efb20947.png'
-                });
+      //          // eslint-disable-next-line no-unused-vars
+      //          const not = new Notification(`Добавлено новое проклятие - ${name}`, {
+      //             title: "mi",
+      //             body: curse.title,
+      //             icon: 'https://tab-jet.vercel.app/static/media/logoBig.433cf0ad02a6efb20947.png'
+      //           });
                 
             
-              }
-            }
-          }
-          sumRef.current[index] = sum[index]
-        } 
-      }
+      //         }
+      //       }
+      //     }
+      //     sumRef.current[index] = sum[index]
+      //   } 
+      // }
     });
 
     return () => unsubscribe();
@@ -131,7 +140,15 @@ if ("Notification" in window) {
     handleGetData()
   }, []);
 
-
+  useEffect(() => {
+    if (sum > prevSumRef.current) {
+      console.log('Sum увеличилось:', sum);
+      audioRef.current.play()
+      // Здесь вы можете вывести сообщение или выполнить другие действия
+    }
+    // Обновляем текущее значение в ref
+    prevSumRef.current = sum;
+  }, [sum]);
 
   const selectUser = (index) => {
     setSelectedName(index)
@@ -160,8 +177,8 @@ if ("Notification" in window) {
             <button onClick={() => selectUser(3)} style={{border: selectedName === 3 ?"2px solid #751a79":null, borderRadius:selectedName === 3 ?"10px":null}}>{adminData.listMember[3]}</button>
           </>
         )}
-        {selectedName !== null && userData !== null && userData[selectedName]?.curses && <div className="listCurse">
-        {userData[selectedName].curses.filter(item => item.completedCounter !== item.totalCounter).map((item,index) => (
+        {selectedName !== null && userData !== null && <div className="listCurse">
+        {userData.filter(item => item.completedCounter !== item.totalCounter).map((item,index) => (
           <span key={index}>{item.name}</span>
         ))}
         </div>}
