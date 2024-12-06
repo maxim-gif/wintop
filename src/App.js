@@ -23,6 +23,8 @@ function App() {
   const [userData, setUserData] = useState(null);
   const [selectedName, setSelectedName] = useState(null);
   const [status, setStatus] = useState('block');
+  const [st, setSt] = useState(true);
+
   
   
   // const sumRef = useRef([0,0,0,0])
@@ -63,18 +65,15 @@ if ("Notification" in window) {
   }, []);
 
   useEffect(() => {
- 
-    console.log(sum);
-    console.log(prevSumRef);
-      if (sum > prevSumRef.current && prevSumRef.current !== -1) {
-        console.log(sum);
-        console.log(prevSumRef);
+      if (sum > prevSumRef.current) {
         console.log('Sum увеличилось:', sum);
-        audioRef.current.play()
+        console.log(st);
+        
+          audioRef.current.play()
+        
       }
       prevSumRef.current = sum;
 
-  
   }, [sum]);
 
   const selectUser = (index) => {
@@ -93,7 +92,7 @@ if ("Notification" in window) {
       }
 
     });
-
+    
     return () => unsubscribe();
   }
 
