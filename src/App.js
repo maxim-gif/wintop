@@ -27,11 +27,11 @@ function App() {
   
   // const sumRef = useRef([0,0,0,0])
 
-  const [sum, setSum] = useState(0);
-  const prevSumRef = useRef(0);
+  const [sum, setSum] = useState(-1);
+  const prevSumRef = useRef(-1);
 
 
-  // Проверяем, поддерживает ли браузер уведомления
+
 if ("Notification" in window) {
   // Запрашиваем разрешение на уведомления
   Notification.requestPermission().then(function(permission) {
@@ -59,11 +59,31 @@ if ("Notification" in window) {
 
 
   useEffect(() => {
+    handleGetData()
+  }, []);
+
+  useEffect(() => {
+ 
+    console.log(sum);
+    console.log(prevSumRef);
+      if (sum > prevSumRef.current && prevSumRef.current !== -1) {
+        console.log(sum);
+        console.log(prevSumRef);
+        console.log('Sum увеличилось:', sum);
+        audioRef.current.play()
+      }
+      prevSumRef.current = sum;
+
+  
+  }, [sum]);
+
+  const selectUser = (index) => {
+    setSelectedName(index)
     const db = getDatabase(app);
-    const dataRef = ref(db, 'participantData/0/curses');
+    const dataRef = ref(db, `participantData/${index}/curses`);
     const unsubscribe = onValue(dataRef, (snapshot) => {
       const data = snapshot.val();
-      console.log(data);
+      // console.log(data);
       setUserData(data)
       if (data !== null) {
         const sum = data.reduce((accumulator, curse) => {
@@ -71,87 +91,10 @@ if ("Notification" in window) {
         }, 0);
         setSum(sum)
       }
-      
-      // for (let index = 0; index < 4; index++) {
-      //   if (data !== null && data[index]) {
-  
-      //     const sort = [...new Set(data[index].uncompletedCursesList)]
-  
-      //     const getIndex = (name) => {
-      //       const index = sort.indexOf(name);
-      //       return index === -1 ? Infinity : index;
-      //     }
-      //     if (data[index].curses !== undefined) {
-      //       data[index].curses.sort((a, b) => getIndex(a.name) - getIndex(b.name));
-      //       data[index].curses.sort(function(a, b) {
-      //         return a.general === b.general ? 0 : a.general ? -1 : 1;
-      //       });
-      //       data[index].curses.sort(function(a, b) {
-      //         if (a.completedCounter === a.totalCounter && b.completedCounter !== b.totalCounter) {
-      //           return 1;
-      //         } else if (a.completedCounter !== a.totalCounter && b.completedCounter === b.totalCounter) {
-      //           return -1;
-      //         } else {
-      //           return 0;
-      //         }
-      //       })
-      //     }
-  
-      //     let sum = [0,0,0,0];
-      //     if (data[index].curses) {
-      //       data[index].curses.forEach((item) => {
-      //         sum[index] += item.totalCounter;
-      //       });
-      //     } else {
-      //       sum[index] = -1
-      //     }
-  
-  
-      //     if (sum[index] > sumRef.current[index]) {
-      //       if (sumRef.current[index] !== 0) {
-  
-      //         if (index === selectedName) {
-  
-      //           const list = data[index].uncompletedCursesList
-      //           const name = list[list.length-1];
-      //           const curse = data[index].curses.find((item) => item.name === name )
-      //           audioRef.current.play()
-  
-      //          // eslint-disable-next-line no-unused-vars
-      //          const not = new Notification(`Добавлено новое проклятие - ${name}`, {
-      //             title: "mi",
-      //             body: curse.title,
-      //             icon: 'https://tab-jet.vercel.app/static/media/logoBig.433cf0ad02a6efb20947.png'
-      //           });
-                
-            
-      //         }
-      //       }
-      //     }
-      //     sumRef.current[index] = sum[index]
-      //   } 
-      // }
+
     });
 
     return () => unsubscribe();
-  }, [selectedName]);
-
-  useEffect(() => {
-    handleGetData()
-  }, []);
-
-  useEffect(() => {
-    if (sum > prevSumRef.current) {
-      console.log('Sum увеличилось:', sum);
-      audioRef.current.play()
-      // Здесь вы можете вывести сообщение или выполнить другие действия
-    }
-    // Обновляем текущее значение в ref
-    prevSumRef.current = sum;
-  }, [sum]);
-
-  const selectUser = (index) => {
-    setSelectedName(index)
   }
 
 
