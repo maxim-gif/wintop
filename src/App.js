@@ -69,8 +69,10 @@ if ("Notification" in window) {
         console.log('Sum увеличилось:', sum);
         console.log(st);
         
-          audioRef.current.play()
-        
+          // audioRef.current.play()
+          const utterance = new SpeechSynthesisUtterance("Вам добавлено проклятие Отпечатки");
+          utterance.lang = 'ru-RU';
+          window.speechSynthesis.speak(utterance);
       }
       prevSumRef.current = sum;
 
