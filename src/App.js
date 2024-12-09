@@ -21,17 +21,20 @@ function App() {
 
   const [adminData, setAdminData] = useState(null);
   const [userData, setUserData] = useState(null);
+  const [previousData, setPreviousData] = useState(null);
   const [selectedName, setSelectedName] = useState(null);
   const [status, setStatus] = useState('block');
-  const [st, setSt] = useState(true);
+  const [firstLoad, setFirstLoad] = useState(true);
+  
+
 
   
   
   // const sumRef = useRef([0,0,0,0])
 
-  const [sum, setSum] = useState(-1);
-  const prevSumRef = useRef(-1);
-
+  const [sum, setSum] = useState(0);
+  const prevSumRef = useRef(0);
+ 
 
 
 if ("Notification" in window) {
@@ -65,26 +68,64 @@ if ("Notification" in window) {
   }, []);
 
   useEffect(() => {
+      console.log(sum);
+      console.log(prevSumRef.current);
       if (sum > prevSumRef.current) {
-        console.log('Sum увеличилось:', sum);
-        console.log(st);
-        
-          audioRef.current.play()
-          // const utterance = new SpeechSynthesisUtterance("Вам добавлено проклятие Отпечатки");
-          // utterance.lang = 'ru-RU';
-          // window.speechSynthesis.speak(utterance);
+        let nameCurse
+        if (userData !== null) {
+          console.log(userData);
+          console.log(previousData);
+         if (previousData === null) {
+          nameCurse = userData[userData.length-1].name
+         } else {
+          if (previousData.length === userData.length) {
+            for (let index = 0; index < userData.length; index++) {
+              if (userData[index].totalCounter > previousData[index].totalCounter) {
+                nameCurse = userData[index].name
+              }
+            }
+           } else {
+            nameCurse = userData[userData.length-1].name
+           }
+         }
+
+         setPreviousData(userData)
+        }
+          // audioRef.current.play()
+          if (nameCurse !== undefined) {
+            const utterance = new SpeechSynthesisUtterance(`Вам добавлено проклятие ${nameCurse}`);
+            utterance.lang = 'ru-RU';
+            window.speechSynthesis.speak(utterance);
+          }
+          
+          
       }
       prevSumRef.current = sum;
-
   }, [sum]);
 
-  const selectUser = (index) => {
+  useEffect(() => {
+    
+
+}, [userData]);
+
+  const selectUser = async(index) => {
     setSelectedName(index)
-    const db = getDatabase(app);
-    const dataRef = ref(db, `participantData/${index}/curses`);
-    const unsubscribe = onValue(dataRef, (snapshot) => {
+    const response = await fetch(
+      `https://table-d13fe-default-rtdb.firebaseio.com/participantData.json`
+    );
+    const data = await response.json();
+    if (data !== null && data[index] !== undefined) {
+      setPreviousData(data[index].curses)
+    }
+  }
+
+
+  useEffect(() => {
+    if (selectedName !== null) {
+      const db = getDatabase(app);
+      const dataRef = ref(db, `participantData/${selectedName}/curses`);
+      const unsubscribe = onValue(dataRef, (snapshot) => {
       const data = snapshot.val();
-      // console.log(data);
       setUserData(data)
       if (data !== null) {
         const sum = data.reduce((accumulator, curse) => {
@@ -94,9 +135,14 @@ if ("Notification" in window) {
       }
 
     });
-    
+   
     return () => unsubscribe();
-  }
+    } else {
+
+    }
+   
+}, [selectedName]);
+
 
 
   const handleDisableWindow = () => {
@@ -106,7 +152,6 @@ if ("Notification" in window) {
 
   const audioRef = useRef(null);
   
-
 
   return (
     <div className="App">
