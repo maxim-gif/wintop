@@ -29,7 +29,12 @@ body {
   color: white;
 }
 span {
-  color: #751a79;
+  color: white;
+  text-shadow: 
+      -1px -1px 0 black,  
+       1px -1px 0 black,
+      -1px  1px 0 black,
+       1px  1px 0 black;
   font-weight: 900;
   margin-bottom: 20px;
   opacity: 1;
@@ -51,17 +56,27 @@ button {
   width: 100px;
   height: 30px;
   margin: 5px 0;
-  color: rgb(0, 0, 0);
+  color: white;
+  text-shadow: 
+      -1px -1px 0 black,  
+       1px -1px 0 black,
+      -1px  1px 0 black,
+       1px  1px 0 black;
   font-weight: 500;
   font-size: 12px;
   background: #ffffff;
-  border: 1px solid #df7fe2;
+  border: 1px solid #000000;
   -webkit-app-region: no-drag;
 }
 .listCurse > span {
  
   margin-bottom: 0;
-  color: rgb(0, 0, 0);
+  color: white;
+  text-shadow: 
+      -1px -1px 0 black,  
+       1px -1px 0 black,
+      -1px  1px 0 black,
+       1px  1px 0 black;
 }
 .listCurse {
   display: flex;
