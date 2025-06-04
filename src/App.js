@@ -170,7 +170,7 @@ if ("Notification" in window) {
         )}
         {selectedName !== null && userData !== null && <div className="listCurse">
         {userData.filter(item => item.completedCounter !== item.totalCounter).map((item,index) => (
-          <span key={index}>{item.name}</span>
+          <span key={index}>{item.name} - {item.totalCounter-item.completedCounter}</span>
         ))}
         </div>}
         {selectedName !== null &&<button className="blockButton" onClick={handleDisableWindow} style={{display:"none"}}>Зафиксировать на месте</button>}
