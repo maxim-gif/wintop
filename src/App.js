@@ -95,6 +95,7 @@ if ("Notification" in window) {
           if (nameCurse !== undefined) {
             const utterance = new SpeechSynthesisUtterance(`Вам добавлено проклятие ${nameCurse}`);
             utterance.lang = 'ru-RU';
+            window.speechSynthesis.cancel();
             window.speechSynthesis.speak(utterance);
           }
           
@@ -152,6 +153,7 @@ if ("Notification" in window) {
 
   const audioRef = useRef(null);
   
+
 
   return (
     <div className="App">
