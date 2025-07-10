@@ -67,47 +67,86 @@ if ("Notification" in window) {
     handleGetData()
   }, []);
 
-  useEffect(() => {
-      console.log(sum);
-      console.log(prevSumRef.current);
-      if (sum > prevSumRef.current) {
-        let nameCurse
-        if (userData !== null) {
-          console.log(userData);
-          console.log(previousData);
-         if (previousData === null) {
-          nameCurse = userData[userData.length-1].name
-         } else {
-          if (previousData.length === userData.length) {
-            for (let index = 0; index < userData.length; index++) {
-              if (userData[index].totalCounter > previousData[index].totalCounter) {
-                nameCurse = userData[index].name
-              }
+  // useEffect(() => {
+  //     console.log(sum);
+  //     console.log(prevSumRef.current);
+  //     if (sum > prevSumRef.current) {
+  //       let nameCurse
+  //       if (userData !== null) {
+  //         console.log(userData);
+  //         console.log(previousData);
+  //        if (previousData === null) {
+  //         nameCurse = userData[userData.length-1].name
+  //        } else {
+  //         if (previousData.length === userData.length) {
+  //           for (let index = 0; index < userData.length; index++) {
+  //             if (userData[index].totalCounter > previousData[index].totalCounter) {
+  //               nameCurse = userData[index].name
+  //             }
+  //           }
+  //          } else {
+  //           nameCurse = userData[userData.length-1].name
+  //          }
+  //        }
+
+  //        setPreviousData(userData)
+  //       }
+  //         // audioRef.current.play()
+  //         if (nameCurse !== undefined) {
+  //           const utterance = new SpeechSynthesisUtterance(`Вам добавлено проклятие ${nameCurse}`);
+  //           utterance.lang = 'ru-RU';
+  //           window.speechSynthesis.cancel();
+  //           window.speechSynthesis.speak(utterance);
+  //         }
+          
+          
+  //     }
+  //     prevSumRef.current = sum;
+  // }, [sum]);
+
+
+  const prevUserDataRef = useRef(null); // Хранит предыдущие данные
+
+useEffect(() => {
+  if (sum > prevSumRef.current) {
+    let nameCurse;
+    if (userData !== null) {
+      if (prevUserDataRef.current === null) {
+        nameCurse = userData[userData.length - 1].name;
+      } else {
+        if (userData.length === prevUserDataRef.current.length) {
+          for (let index = 0; index < userData.length; index++) {
+            if (
+              userData[index].totalCounter >
+              prevUserDataRef.current[index].totalCounter
+            ) {
+              nameCurse = userData[index].name;
+              break;
             }
-           } else {
-            nameCurse = userData[userData.length-1].name
-           }
-         }
-
-         setPreviousData(userData)
-        }
-          // audioRef.current.play()
-          if (nameCurse !== undefined) {
-            const utterance = new SpeechSynthesisUtterance(`Вам добавлено проклятие ${nameCurse}`);
-            utterance.lang = 'ru-RU';
-            window.speechSynthesis.cancel();
-            window.speechSynthesis.speak(utterance);
           }
-          
-          
+        } else {
+          nameCurse = userData[userData.length - 1].name;
+        }
       }
-      prevSumRef.current = sum;
-  }, [sum]);
+    }
 
-  useEffect(() => {
-    
+    // Обновляем ref с текущими данными
+    prevUserDataRef.current = [...userData];
 
-}, [userData]);
+    if (nameCurse !== undefined) {
+      window.speechSynthesis.cancel(); // Отменяем предыдущее произнесение
+      setTimeout(() => { // Даем время на отмену
+        const utterance = new SpeechSynthesisUtterance(
+          `Вам добавлено проклятие ${nameCurse}`
+        );
+        utterance.lang = 'ru-RU';
+        window.speechSynthesis.speak(utterance);
+      }, 100);
+    }
+  }
+  prevSumRef.current = sum;
+}, [sum]);
+
 
   const selectUser = async(index) => {
     setSelectedName(index)
